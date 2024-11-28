@@ -2,11 +2,9 @@ import ClientError from '../exceptions/ClientError.js';
 import predictClassification from './inference.js';
 import crypto from 'crypto';
 import storeData from './storeData.js';
+import predictHistories from './histories.js';
 
 async function postPredictHandler(request, h) {
-  /*
-  * Akan diisi setelah membuat logika inferensi machine learning.
-  */
   try {
     const { image } = request.payload;
     const { model } = request.server.app;
@@ -39,12 +37,30 @@ async function postPredictHandler(request, h) {
   }
 }
 
-function getHistories(request, h) {
+async function getHistories(request, h) {
+
+  const histories = await predictHistories();
+  const formatData = [];
+
+  histories.forEach((doc) => {
+    const data = doc.data();
+    formatData.push({
+      id: doc.id,
+      history: {
+        id: doc.id,
+        result: data.result,
+        suggestion: data.suggestion,
+        createdAt: data.createdAt,
+      },
+    });
+  });
+
   const response = h.response({
     status: 'success',
     message: 'Get histories success!',
     data: histories,
   });
+
   response.code(200);
   return response;
 }
