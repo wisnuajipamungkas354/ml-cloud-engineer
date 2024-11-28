@@ -40,10 +40,11 @@ async function postPredictHandler(request, h) {
 async function getHistories(request, h) {
 
   const histories = await predictHistories();
+  const formatData = [];
 
-  const result = histories.map((doc, i) => {
+  histories.forEach((doc) => {
     const data = doc.data();
-    result[i] = ({
+    formatData.push({
       id: doc.id,
       history: {
         id: doc.id,
@@ -57,7 +58,7 @@ async function getHistories(request, h) {
   const response = h.response({
     status: 'success',
     message: 'Get histories success!',
-    data: result,
+    data: formatData,
   });
 
   response.code(200);
