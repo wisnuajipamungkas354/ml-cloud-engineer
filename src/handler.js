@@ -1,7 +1,7 @@
 import ClientError from '../exceptions/ClientError.js';
-import histories from './histories.js';
 import predictClassification from './inference.js';
 import crypto from 'crypto';
+import storeData from './storeData.js';
 
 async function postPredictHandler(request, h) {
   /*
@@ -24,7 +24,7 @@ async function postPredictHandler(request, h) {
       "createdAt": createdAt
     }
 
-    histories.push(data);
+    await storeData.push(id, data);
 
     const response = h.response({
       status: 'success',
